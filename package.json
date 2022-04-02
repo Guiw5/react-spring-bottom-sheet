@@ -1,12 +1,12 @@
 {
-  "name": "react-spring-bottom-sheet",
+  "name": "guiw5-bottom-sheet",
   "description": "✨ Accessible, 🪄 Delightful, and 🤯 Performant. Built on react-spring for the web, and react-use-gesture.",
   "license": "MIT",
   "author": "Cody Olsen",
   "homepage": "https://react-spring-bottom-sheet.cocody.dev",
-  "repository": "stipsan/react-spring-bottom-sheet",
+  "repository": "guiw5/react-spring-bottom-sheet",
   "bugs": {
-    "url": "https://github.com/stipsan/react-spring-bottom-sheet/issues"
+    "url": "https://github.com/guiw5/react-spring-bottom-sheet/issues"
   },
   "version": "3.4.0",
   "main": "dist/index.js",
@@ -128,7 +128,7 @@
     "package.json": "prettier-package-json --write"
   },
   "meta": {
-    "twitter:site": "@stipsan",
+    "twitter:site": "@guidow5",
     "twitter:image:src": "https://react-spring-bottom-sheet.cocody.dev/somecard.png"
   },
   "prettier": {
