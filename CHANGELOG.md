@@ -1,3 +1,10 @@
+## [3.5.2](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.1...v3.5.2) (2022-04-05)
+
+
+### Bug Fixes
+
+* allow null ref ([2652ca8](https://github.com/guiw5/react-spring-bottom-sheet/commit/2652ca89ebf8e5046fa97f123e5358616d5bb708))
+
 ## [3.5.1](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.0...v3.5.1) (2022-04-05)
 
 
