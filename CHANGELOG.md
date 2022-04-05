@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.4.1...v3.5.0) (2022-04-05)
+
+
+### Features
+
+* expose scrollRef ([41075d6](https://github.com/guiw5/react-spring-bottom-sheet/commit/41075d6e81ea4c4002ba9401d291239678fdb4b2))
+
 ## [3.4.1](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.4.0...v3.4.1) (2022-04-02)
 
 
