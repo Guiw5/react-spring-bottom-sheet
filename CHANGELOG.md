@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.4.0...v3.4.1) (2022-04-02)
+
+
+### Bug Fixes
+
+* change default duration ([1976bdf](https://github.com/guiw5/react-spring-bottom-sheet/commit/1976bdf76241c7366835ca93ee45c9f9392e3128))
+
 # [3.4.0](https://github.com/stipsan/react-spring-bottom-sheet/compare/v3.3.0...v3.4.0) (2021-06-23)
 
 
