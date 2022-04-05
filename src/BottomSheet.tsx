@@ -7,6 +7,7 @@
 
 import { useMachine } from '@xstate/react'
 import React, {
+  createRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -62,6 +63,7 @@ export const BottomSheet = React.forwardRef<
     defaultSnap: getDefaultSnap = _defaultSnap,
     snapPoints: getSnapPoints = _snapPoints,
     blocking = true,
+    scrollRef = createRef<HTMLDivElement>(),
     scrollLocking = true,
     style,
     onSpringStart,
@@ -94,7 +96,6 @@ export const BottomSheet = React.forwardRef<
   const [spring, set] = useSpring()
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -167,7 +168,7 @@ export const BottomSheet = React.forwardRef<
             // @see https://springs.pomb.us
             mass: 1,
             // "stiffness"
-            duration: 130,
+            duration: 115,
             tension,
             // "damping"
             friction: Math.max(
@@ -451,13 +452,13 @@ export const BottomSheet = React.forwardRef<
   useEffect(() => {
     const elem = scrollRef.current
 
-    const preventScrolling = e => {
+    const preventScrolling = (e) => {
       if (preventScrollingRef.current) {
         e.preventDefault()
       }
     }
 
-    const preventSafariOverscroll = e => {
+    const preventSafariOverscroll = (e) => {
       if (elem.scrollTop < 0) {
         requestAnimationFrame(() => {
           elem.style.overflow = 'hidden'
@@ -564,7 +565,7 @@ export const BottomSheet = React.forwardRef<
         newY = maxSnapRef.current
       }
 
-      preventScrollingRef.current = newY < maxSnapRef.current;
+      preventScrollingRef.current = newY < maxSnapRef.current
     } else {
       preventScrollingRef.current = false
     }
@@ -667,7 +668,12 @@ export const BottomSheet = React.forwardRef<
             {header}
           </div>
         )}
-        <div key="scroll" data-rsbs-scroll ref={scrollRef} {...(expandOnContentDrag ? bind({ isContentDragging: true }) : {})}>
+        <div
+          key="scroll"
+          data-rsbs-scroll
+          ref={scrollRef}
+          {...(expandOnContentDrag ? bind({ isContentDragging: true }) : {})}
+        >
           <div data-rsbs-content ref={contentRef}>
             {children}
           </div>
