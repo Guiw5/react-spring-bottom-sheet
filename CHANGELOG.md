@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.0...v3.5.1) (2022-04-05)
+
+
+### Bug Fixes
+
+* useRef ([8da8e6e](https://github.com/guiw5/react-spring-bottom-sheet/commit/8da8e6e331bb3a4513dd0eeb7712d5542a7895d9))
+
 # [3.5.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.4.1...v3.5.0) (2022-04-05)
 
 
