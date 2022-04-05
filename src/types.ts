@@ -58,7 +58,7 @@ export type Props = {
   /**
    * Scroller target
    */
-  scrollRef?: React.MutableRefObject<HTMLDivElement>
+  scrollerRef?: React.MutableRefObject<HTMLDivElement>
 
   /**
    * Start a transition from closed to open, open to closed, or snap to snap.

@@ -7,7 +7,6 @@
 
 import { useMachine } from '@xstate/react'
 import React, {
-  createRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -63,7 +62,7 @@ export const BottomSheet = React.forwardRef<
     defaultSnap: getDefaultSnap = _defaultSnap,
     snapPoints: getSnapPoints = _snapPoints,
     blocking = true,
-    scrollRef = createRef<HTMLDivElement>(),
+    scrollerRef,
     scrollLocking = true,
     style,
     onSpringStart,
@@ -95,6 +94,8 @@ export const BottomSheet = React.forwardRef<
   // Behold, the engine of it all!
   const [spring, set] = useSpring()
 
+  const defaultScrollerRef = useRef<HTMLDivElement>(null)
+  const scrollRef = scrollerRef ?? defaultScrollerRef
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
