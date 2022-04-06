@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.2...v3.6.0) (2022-04-06)
+
+
+### Features
+
+* expose scrollElement into sheetRef ([829148f](https://github.com/guiw5/react-spring-bottom-sheet/commit/829148f0a5ffd33fe75f6ebd693a3c370c4f9756))
+
 ## [3.5.2](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.1...v3.5.2) (2022-04-05)
 
 
