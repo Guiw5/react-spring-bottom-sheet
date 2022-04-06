@@ -415,12 +415,14 @@ export const BottomSheet = React.forwardRef<
       send('CLOSE')
     }
   }, [_open, send, ready])
+
   useLayoutEffect(() => {
     // Adjust the height whenever the snap points are changed due to resize events
     if (maxHeight || maxSnap || minSnap) {
       send('RESIZE')
     }
   }, [maxHeight, maxSnap, minSnap, send])
+
   useEffect(
     () => () => {
       // Ensure effects are cleaned up on unmount, in case they're not cleaned up otherwise
@@ -445,6 +447,9 @@ export const BottomSheet = React.forwardRef<
       },
       get height() {
         return heightRef.current
+      },
+      get scrollElement() {
+        return scrollRef.current
       },
     }),
     [send]
@@ -670,6 +675,7 @@ export const BottomSheet = React.forwardRef<
           </div>
         )}
         <div
+          id="scroll"
           key="scroll"
           data-rsbs-scroll
           ref={scrollRef}

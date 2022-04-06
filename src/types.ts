@@ -176,4 +176,6 @@ export interface RefHandles {
    * It's update lifecycle with events are onSpringStart and onSpringCancel will give you the old value, while onSpringEnd will give you the current one.
    */
   height: number
+
+  scrollElement: HTMLDivElement
 }
