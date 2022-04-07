@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.6.0...v3.7.0) (2022-04-07)
+
+
+### Features
+
+* keep bottomSheet mounted ([de05fb0](https://github.com/guiw5/react-spring-bottom-sheet/commit/de05fb0a4148753e235d3ee80aa06613f86181ac))
+
 # [3.6.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.5.2...v3.6.0) (2022-04-06)
 
 

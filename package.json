@@ -8,7 +8,7 @@
   "bugs": {
     "url": "https://github.com/guiw5/react-spring-bottom-sheet/issues"
   },
-  "version": "3.6.0",
+  "version": "3.7.0",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "files": [
