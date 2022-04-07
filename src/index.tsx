@@ -16,7 +16,7 @@ export const BottomSheet = forwardRef<RefHandles, Props>(function BottomSheet(
   ref
 ) {
   // Mounted state, helps SSR but also ensures you can't tab into the sheet while it's closed, or nav there in a screen reader
-  const [mounted, setMounted] = useState(false)
+  // const [mounted, setMounted] = useState(false)
   const timerRef = useRef<ReturnType<typeof requestAnimationFrame>>()
   // The last point that the user snapped to, useful for open/closed toggling and the user defined height is remembered
   const lastSnapRef = useRef(null)
@@ -33,7 +33,7 @@ export const BottomSheet = forwardRef<RefHandles, Props>(function BottomSheet(
   useLayoutEffect(() => {
     if (props.open) {
       cancelAnimationFrame(timerRef.current)
-      setMounted(true)
+      // setMounted(true)
 
       // Cleanup defaultOpen state on close
       return () => {
@@ -60,18 +60,18 @@ export const BottomSheet = forwardRef<RefHandles, Props>(function BottomSheet(
       // Forward the event
       await onSpringEnd?.(event)
 
-      if (event.type === 'CLOSE') {
-        // Unmount from the dom to avoid contents being tabbable or visible to screen readers while closed
-        timerRef.current = requestAnimationFrame(() => setMounted(false))
-      }
+      // if (event.type === 'CLOSE') {
+      //   // Unmount from the dom to avoid contents being tabbable or visible to screen readers while closed
+      //   timerRef.current = requestAnimationFrame(() => setMounted(false))
+      // }
     },
     [onSpringEnd]
   )
 
   // This isn't just a performance optimization, it's also to avoid issues when running a non-browser env like SSR
-  if (!mounted) {
-    return null
-  }
+  // if (!mounted) {
+  //   return null
+  // }
 
   return (
     <Portal data-rsbs-portal>
