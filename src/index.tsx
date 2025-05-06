@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-pascal-case */
-import Portal from '@reach/portal'
 import React, { forwardRef, useRef, useState, useCallback } from 'react'
 import { BottomSheet as _BottomSheet } from './BottomSheet'
 import type { Props, RefHandles, SpringEvent } from './types'
 import { useLayoutEffect } from './hooks'
+import { Portal } from './reach-portal/reach-portal'
 
 export type {
   RefHandles as BottomSheetRef,
