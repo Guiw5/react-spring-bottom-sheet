@@ -1,3 +1,10 @@
+## [3.7.1](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.7.0...v3.7.1) (2025-05-06)
+
+
+### Bug Fixes
+
+* add 18 to react peer dep ([d89c0bb](https://github.com/guiw5/react-spring-bottom-sheet/commit/d89c0bbbd28e89bfc9aaf5136c83b6f254d2430b))
+
 # [3.7.0](https://github.com/guiw5/react-spring-bottom-sheet/compare/v3.6.0...v3.7.0) (2022-04-07)
 
 
