@@ -50,6 +50,8 @@ export type SpringConfig = {
   mass: number
   tension: number
   friction: number
+  velocity: number
+  duration: number
 }
 
 export type Props = {
@@ -170,6 +172,12 @@ export type Props = {
    * @default expandOnContentDrag === false
    */
   expandOnContentDrag?: boolean
+
+  /**
+   * Whether the bottom sheet should be mounted when it's closed.
+   * @default false
+   */
+  keepMounted?: boolean
 } & Omit<React.PropsWithoutRef<JSX.IntrinsicElements['div']>, 'children'>
 
 export interface RefHandles {
