@@ -40,6 +40,13 @@
 
 * change default duration ([1976bdf](https://github.com/guiw5/react-spring-bottom-sheet/commit/1976bdf76241c7366835ca93ee45c9f9392e3128))
 
+## [3.4.1](https://github.com/stipsan/react-spring-bottom-sheet/compare/v3.4.0...v3.4.1) (2022-06-01)
+
+
+### Bug Fixes
+
+* add 18 to react peer dep ([d89c0bb](https://github.com/stipsan/react-spring-bottom-sheet/commit/d89c0bbbd28e89bfc9aaf5136c83b6f254d2430b))
+
 # [3.4.0](https://github.com/stipsan/react-spring-bottom-sheet/compare/v3.3.0...v3.4.0) (2021-06-23)
 
 
