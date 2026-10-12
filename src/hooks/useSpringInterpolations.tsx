@@ -10,8 +10,10 @@ import { clamp } from '../utils'
 
 export function useSpringInterpolations({
   spring,
+  fadeContent = true,
 }: {
   spring: Spring
+  fadeContent?: boolean
 }): React.CSSProperties {
   const { y, maxHeight, minSnap, maxSnap } = spring
 
@@ -58,7 +60,9 @@ export function useSpringInterpolations({
 
     return {
       // Fancy content fade-in effect
-      ['--rsbs-content-opacity' as any]: interpolateContentOpacity,
+      ['--rsbs-content-opacity' as any]: fadeContent
+        ? interpolateContentOpacity
+        : 1,
       // Fading in the backdrop
       ['--rsbs-backdrop-opacity' as any]: interpolateBackdrop,
       // Scaling the antigap in the bottom
@@ -70,5 +74,5 @@ export function useSpringInterpolations({
       // Animates the height state, not the most performant way but it's the safest with regards to mobile browser and focus/scrolling that could happen while animating
       ['--rsbs-overlay-h' as any]: interpolateHeight,
     }
-  }, [y, maxHeight, minSnap, maxSnap])
+  }, [y, maxHeight, minSnap, maxSnap, fadeContent])
 }

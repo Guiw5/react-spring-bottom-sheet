@@ -67,6 +67,13 @@ export type SpringConfig = {
   clamp: boolean
 }
 
+export type Motion = {
+  open?: Partial<SpringConfig>
+  close?: Partial<SpringConfig>
+  release?: Partial<SpringConfig>
+  reduced?: Partial<SpringConfig>
+}
+
 export type Props = {
   /**
    * Ensure that whatever you put in here have at least 1px height, or else the bottom sheet won't open
@@ -84,6 +91,12 @@ export type Props = {
    * Pass the spring configurations (to change animation) in this format: { mass, tension, friction, duration }.
    */
   springConfig?: Partial<SpringConfig>
+
+  /** Per transition configs merged over `springConfig`, see `presets.sheet`. */
+  motion?: Motion
+
+  /** @default true */
+  fadeContent?: boolean
 
   /**
    * Scroller target
