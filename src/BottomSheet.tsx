@@ -49,6 +49,7 @@ type SpringUpdate = {
   maxSnap?: number
   immediate?: boolean
   config?: Partial<SpringConfig>
+  motion?: Partial<SpringConfig>
 }
 
 export const BottomSheet = React.forwardRef<
@@ -77,6 +78,8 @@ export const BottomSheet = React.forwardRef<
     scrollLocking = true,
     style,
     springConfig,
+    motion,
+    fadeContent = true,
     onSpringStart,
     onSpringCancel,
     onSpringEnd,
@@ -94,12 +97,16 @@ export const BottomSheet = React.forwardRef<
   const onSpringCancelRef = useRef(onSpringCancel)
   const onSpringEndRef = useRef(onSpringEnd)
   const springConfigRef = useRef(springConfig)
+  const motionRef = useRef(motion)
   useEffect(() => {
     onSpringStartRef.current = onSpringStart
     onSpringCancelRef.current = onSpringCancel
     onSpringEndRef.current = onSpringEnd
     springConfigRef.current = springConfig
-  }, [onSpringCancel, onSpringStart, onSpringEnd, springConfig])
+    motionRef.current = motion
+  }, [onSpringCancel, onSpringStart, onSpringEnd, springConfig, motion])
+
+  const releaseVelocityRef = useRef<number | null>(null)
 
   // Behold, the engine of it all!
   const [spring, api] = useSpring()
@@ -167,7 +174,11 @@ export const BottomSheet = React.forwardRef<
 
   // Starts a spring transition and resolves when it settles (or gets interrupted)
   const asyncSet = useCallback(
-    ({ config: { velocity = 1, ...userConfig } = {}, ...opts }: SpringUpdate) =>
+    ({
+      config: { velocity = 1, ...userConfig } = {},
+      motion: motionConfig,
+      ...opts
+    }: SpringUpdate) =>
       Promise.all(
         api.start({
           ...opts,
@@ -181,16 +192,23 @@ export const BottomSheet = React.forwardRef<
             // "damping"
             friction: Math.max(
               friction,
-              friction + (friction - friction * velocity)
+              friction + (friction - friction * Math.abs(velocity))
             ),
             // When duration is set the spring physics above are ignored in favor of a fixed length tween
             duration: 115,
             ...springConfigRef.current,
+            ...motionConfig,
           },
         })
       ),
     [api]
   )
+
+  const takeReleaseVelocity = useCallback(() => {
+    const velocity = releaseVelocityRef.current
+    releaseVelocityRef.current = null
+    return motionRef.current?.release ? velocity : null
+  }, [])
 
   // Every implementation reads from refs, so the machine only needs to be wired up once
   const machine = useMemo(
@@ -298,6 +316,20 @@ export const BottomSheet = React.forwardRef<
             })
           }),
           openSmoothly: fromPromise(async () => {
+            const reduced = motionRef.current?.reduced
+            if (prefersReducedMotion.current && reduced) {
+              heightRef.current = defaultSnapRef.current
+              api.set({
+                y: defaultSnapRef.current,
+                ready: 0,
+                maxHeight: maxHeightRef.current,
+                maxSnap: maxSnapRef.current,
+                minSnap: defaultSnapRef.current,
+              })
+              await asyncSet({ ready: 1, motion: reduced })
+              return
+            }
+
             api.set({
               y: 0,
               ready: 1,
@@ -317,6 +349,7 @@ export const BottomSheet = React.forwardRef<
               // Using defaultSnapRef instead of minSnapRef to avoid animating `height` on open
               minSnap: defaultSnapRef.current,
               immediate: prefersReducedMotion.current,
+              motion: motionRef.current?.open,
             })
           }),
           snapSmoothly: fromPromise<void, { y: number; velocity: number }>(
@@ -324,6 +357,7 @@ export const BottomSheet = React.forwardRef<
               const snap = findSnapRef.current(input.y)
               heightRef.current = snap
               lastSnapRef.current = snap
+              const releaseVelocity = takeReleaseVelocity()
               await asyncSet({
                 y: snap,
                 ready: 1,
@@ -331,7 +365,12 @@ export const BottomSheet = React.forwardRef<
                 maxSnap: maxSnapRef.current,
                 minSnap: minSnapRef.current,
                 immediate: prefersReducedMotion.current,
-                config: { velocity: input.velocity },
+                ...(releaseVelocity === null
+                  ? { config: { velocity: input.velocity } }
+                  : {
+                      config: { velocity: releaseVelocity },
+                      motion: motionRef.current?.release,
+                    }),
               })
             }
           ),
@@ -356,12 +395,26 @@ export const BottomSheet = React.forwardRef<
             api.set({ minSnap: heightRef.current })
 
             heightRef.current = 0
+            const releaseVelocity = takeReleaseVelocity()
+
+            const reduced = motionRef.current?.reduced
+            if (prefersReducedMotion.current && reduced) {
+              await asyncSet({ ready: 0, motion: reduced })
+              api.set({ y: 0 })
+              return
+            }
 
             await asyncSet({
               y: 0,
               maxHeight: maxHeightRef.current,
               maxSnap: maxSnapRef.current,
               immediate: prefersReducedMotion.current,
+              ...(releaseVelocity === null
+                ? { motion: motionRef.current?.close }
+                : {
+                    config: { velocity: releaseVelocity },
+                    motion: motionRef.current?.release,
+                  }),
             })
 
             api.set({ ready: 0 })
@@ -376,6 +429,7 @@ export const BottomSheet = React.forwardRef<
       lastSnapRef,
       prefersReducedMotion,
       scrollLockRef,
+      takeReleaseVelocity,
     ]
   )
   const actorRef = useActorRef(machine, { input: { initialState } })
@@ -423,6 +477,7 @@ export const BottomSheet = React.forwardRef<
     forwardRef,
     () => ({
       snapTo: (numberOrCallback, { velocity = 1, source = 'custom' } = {}) => {
+        releaseVelocityRef.current = null
         send({
           type: 'SNAP',
           payload: {
@@ -518,6 +573,13 @@ export const BottomSheet = React.forwardRef<
       Math.min(maxSnapRef.current, rawY + predictedDistance * 2)
     )
 
+    if (first) {
+      releaseVelocityRef.current = null
+    }
+    if (!down) {
+      releaseVelocityRef.current = -direction * velocity
+    }
+
     if (
       !down &&
       onDismiss &&
@@ -606,7 +668,7 @@ export const BottomSheet = React.forwardRef<
     throw new TypeError('minSnapRef is NaN!!')
   }
 
-  const interpolations = useSpringInterpolations({ spring })
+  const interpolations = useSpringInterpolations({ spring, fadeContent })
 
   return (
     <animated.div

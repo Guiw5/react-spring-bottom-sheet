@@ -8,6 +8,7 @@ export type {
   RefHandles as BottomSheetRef,
   Props as BottomSheetProps,
   SpringConfig,
+  Motion,
 } from './types'
 export * as presets from './presets'
 

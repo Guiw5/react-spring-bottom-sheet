@@ -315,6 +315,36 @@ Anything not covered by a recipe can still be passed through:
 />
 ```
 
+#### motion
+
+Type: `{ open?, close?, release?, reduced? }`, each a `Partial<SpringConfig>`.
+
+Separate configs per transition, merged over `springConfig`. `open` and `close` drive the
+sheet entering and leaving. `release` runs when a drag is let go, both for a snap and for a
+swipe to dismiss, and receives the gesture's velocity, so it only makes sense as a spring
+(`duration: undefined`). `reduced` is used when the user prefers reduced motion: instead of
+sliding, the whole sheet fades in place. Without it a reduced motion user gets no animation.
+
+```jsx
+import { BottomSheet, presets } from 'guiw5-bottom-sheet'
+
+;<BottomSheet motion={presets.sheet} />
+```
+
+`presets.sheet` is the iOS sheet curve, `cubic-bezier(0.32, 0.72, 0, 1)`, 450ms in and 280ms
+out, a critically damped release spring (tension `1000`, friction `63`) and a 150ms fade for
+reduced motion.
+
+#### fadeContent
+
+Type: `boolean`, `true` by default.
+
+The content fades while the sheet is near the bottom of its travel. Set it to `false` to
+keep it opaque and only move the sheet.
+
+The backdrop fades from transparent to `--rsbs-backdrop-bg`, so its maximum opacity is the
+alpha of that color: `--rsbs-backdrop-bg: rgba(0, 0, 0, 0.4)` caps it at 0.4.
+
 ### Events
 
 All events receive `SpringEvent` as their argument. The payload varies, but `type` is always present, which can be `'OPEN' | 'RESIZE' | 'SNAP' | 'CLOSE'` depending on the scenario.

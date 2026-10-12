@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { cubicBezier, eased, linear, material, springy } from '../src/presets'
+import {
+  cubicBezier,
+  eased,
+  linear,
+  material,
+  sheet,
+  springy,
+} from '../src/presets'
 
 /** First progress value at which the curve has covered `fraction` of the travel */
 function timeToFraction(easing: (t: number) => number, fraction: number) {
@@ -73,5 +80,22 @@ describe('presets', () => {
     // and both still take longer overall, which is the soft landing
     expect(eased.duration!).toBeGreaterThan(linear.duration!)
     expect(material.duration!).toBeGreaterThan(linear.duration!)
+  })
+})
+
+describe('sheet', () => {
+  it('opens slower than it closes, on the same curve', () => {
+    expect(sheet.open!.duration).toBeGreaterThan(sheet.close!.duration!)
+    expect(sheet.open!.easing).toBe(sheet.close!.easing)
+  })
+
+  it('releases a drag into a critically damped spring', () => {
+    const { duration, tension, friction, mass = 1 } = sheet.release!
+    expect(duration).toBeUndefined()
+    expect(friction).toBeCloseTo(2 * Math.sqrt(tension! * mass), 0)
+  })
+
+  it('keeps reduced motion short', () => {
+    expect(sheet.reduced!.duration).toBeLessThanOrEqual(200)
   })
 })
