@@ -84,9 +84,11 @@ describe('presets', () => {
 })
 
 describe('sheet', () => {
-  it('opens slower than it closes, on the same curve', () => {
-    expect(sheet.open!.duration).toBeGreaterThan(sheet.close!.duration!)
-    expect(sheet.open!.easing).toBe(sheet.close!.easing)
+  it('closes as the opening played backwards', () => {
+    expect(sheet.close!.duration).toBe(sheet.open!.duration)
+    for (const t of [0.1, 0.25, 0.5, 0.75, 0.9]) {
+      expect(sheet.close!.easing!(t)).toBeCloseTo(1 - sheet.open!.easing!(1 - t), 2)
+    }
   })
 
   it('releases a drag into a critically damped spring', () => {

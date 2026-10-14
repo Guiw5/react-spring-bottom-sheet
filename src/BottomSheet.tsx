@@ -107,6 +107,8 @@ export const BottomSheet = React.forwardRef<
   }, [onSpringCancel, onSpringStart, onSpringEnd, springConfig, motion])
 
   const releaseVelocityRef = useRef<number | null>(null)
+  const transitionRef = useRef(0)
+  const resumeOpenRef = useRef(false)
 
   // Behold, the engine of it all!
   const [spring, api] = useSpring()
@@ -281,6 +283,12 @@ export const BottomSheet = React.forwardRef<
             })
           }),
           renderVisuallyHidden: fromPromise(async () => {
+            transitionRef.current++
+            resumeOpenRef.current =
+              spring.ready.get() > 0 && spring.y.get() > 0
+            if (resumeOpenRef.current) {
+              return
+            }
             api.set({
               y: defaultSnapRef.current,
               ready: 0,
@@ -313,6 +321,7 @@ export const BottomSheet = React.forwardRef<
               maxSnap: maxSnapRef.current,
               // Using defaultSnapRef instead of minSnapRef to avoid animating `height` on open
               minSnap: defaultSnapRef.current,
+              fade: 0,
             })
           }),
           openSmoothly: fromPromise(async () => {
@@ -321,22 +330,24 @@ export const BottomSheet = React.forwardRef<
               heightRef.current = defaultSnapRef.current
               api.set({
                 y: defaultSnapRef.current,
-                ready: 0,
+                ...(resumeOpenRef.current ? {} : { ready: 0 }),
                 maxHeight: maxHeightRef.current,
                 maxSnap: maxSnapRef.current,
                 minSnap: defaultSnapRef.current,
+                fade: 0,
               })
               await asyncSet({ ready: 1, motion: reduced })
               return
             }
 
             api.set({
-              y: 0,
+              ...(resumeOpenRef.current ? {} : { y: 0 }),
               ready: 1,
               maxHeight: maxHeightRef.current,
               maxSnap: maxSnapRef.current,
               // Using defaultSnapRef instead of minSnapRef to avoid animating `height` on open
               minSnap: defaultSnapRef.current,
+              fade: motionRef.current?.contentFade ?? 0,
             })
 
             heightRef.current = defaultSnapRef.current
@@ -392,7 +403,12 @@ export const BottomSheet = React.forwardRef<
           }),
           closeSmoothly: fromPromise(async () => {
             // Avoid animating the height property on close and stay within FLIP bounds by upping the minSnap
-            api.set({ minSnap: heightRef.current })
+            const transition = ++transitionRef.current
+            const dismissedByDrag = releaseVelocityRef.current !== null
+            api.set({
+              minSnap: heightRef.current,
+              fade: dismissedByDrag ? 0 : (motionRef.current?.contentFade ?? 0),
+            })
 
             heightRef.current = 0
             const releaseVelocity = takeReleaseVelocity()
@@ -400,7 +416,9 @@ export const BottomSheet = React.forwardRef<
             const reduced = motionRef.current?.reduced
             if (prefersReducedMotion.current && reduced) {
               await asyncSet({ ready: 0, motion: reduced })
-              api.set({ y: 0 })
+              if (transition === transitionRef.current) {
+                api.set({ y: 0 })
+              }
               return
             }
 
@@ -417,7 +435,9 @@ export const BottomSheet = React.forwardRef<
                   }),
             })
 
-            api.set({ ready: 0 })
+            if (transition === transitionRef.current) {
+              api.set({ ready: 0 })
+            }
           }),
         },
       }),
@@ -575,6 +595,7 @@ export const BottomSheet = React.forwardRef<
 
     if (first) {
       releaseVelocityRef.current = null
+      api.set({ fade: 0 })
     }
     if (!down) {
       releaseVelocityRef.current = -direction * velocity

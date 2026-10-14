@@ -72,6 +72,7 @@ export type Motion = {
   close?: Partial<SpringConfig>
   release?: Partial<SpringConfig>
   reduced?: Partial<SpringConfig>
+  contentFade?: number
 }
 
 export type Props = {

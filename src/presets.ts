@@ -82,10 +82,12 @@ export const springy: Partial<SpringConfig> = {
 }
 
 const sheetCurve = cubicBezier(0.32, 0.72, 0, 1)
+const sheetCurveReversed = cubicBezier(1, 0, 0.68, 0.28)
 
 export const sheet: Motion = {
-  open: { duration: 450, easing: sheetCurve },
-  close: { duration: 280, easing: sheetCurve },
+  open: { duration: 400, easing: sheetCurve },
+  close: { duration: 400, easing: sheetCurveReversed },
   release: { duration: undefined, mass: 1, tension: 1000, friction: 63 },
   reduced: { duration: 150, easing: easings.linear },
+  contentFade: 0.15,
 }

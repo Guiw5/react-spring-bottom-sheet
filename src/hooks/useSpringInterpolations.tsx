@@ -15,7 +15,7 @@ export function useSpringInterpolations({
   spring: Spring
   fadeContent?: boolean
 }): React.CSSProperties {
-  const { y, maxHeight, minSnap, maxSnap } = spring
+  const { y, maxHeight, minSnap, maxSnap, fade } = spring
 
   return useMemo(() => {
     // Removes rounded corners on phones when the sheet touches the top of the browser chrome
@@ -44,9 +44,15 @@ export function useSpringInterpolations({
       y >= maxSnap ? Math.ceil(y - maxSnap) : 0
     )
 
-    const interpolateContentOpacity = to([y, minSnap], (y, minSnap) => {
+    const interpolateContentOpacity = to([y, minSnap, fade], (y, minSnap, fade) => {
       if (!minSnap) {
         return 0
+      }
+      if (fade > 0) {
+        return clamp((y / minSnap - (1 - fade)) / fade, 0, 1)
+      }
+      if (!fadeContent) {
+        return 1
       }
       const minX = Math.max(minSnap / 2 - 45, 0)
       const maxX = Math.min(minSnap / 2 + 45, minSnap)
@@ -60,9 +66,7 @@ export function useSpringInterpolations({
 
     return {
       // Fancy content fade-in effect
-      ['--rsbs-content-opacity' as any]: fadeContent
-        ? interpolateContentOpacity
-        : 1,
+      ['--rsbs-content-opacity' as any]: interpolateContentOpacity,
       // Fading in the backdrop
       ['--rsbs-backdrop-opacity' as any]: interpolateBackdrop,
       // Scaling the antigap in the bottom
@@ -74,5 +78,5 @@ export function useSpringInterpolations({
       // Animates the height state, not the most performant way but it's the safest with regards to mobile browser and focus/scrolling that could happen while animating
       ['--rsbs-overlay-h' as any]: interpolateHeight,
     }
-  }, [y, maxHeight, minSnap, maxSnap, fadeContent])
+  }, [y, maxHeight, minSnap, maxSnap, fade, fadeContent])
 }
