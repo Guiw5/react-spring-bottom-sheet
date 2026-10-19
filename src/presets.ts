@@ -1,5 +1,5 @@
 import { easings } from '@react-spring/web'
-import type { SpringConfig } from './types'
+import type { Motion, SpringConfig } from './types'
 
 /**
  * Ready made values for the `springConfig` prop.
@@ -79,4 +79,15 @@ export const springy: Partial<SpringConfig> = {
   duration: undefined,
   tension: 210,
   friction: 26,
+}
+
+const sheetCurve = cubicBezier(0.32, 0.72, 0, 1)
+const sheetCurveReversed = cubicBezier(1, 0, 0.68, 0.28)
+
+export const sheet: Motion = {
+  open: { duration: 400, easing: sheetCurve },
+  close: { duration: 400, easing: sheetCurveReversed },
+  release: { duration: undefined, mass: 1, tension: 1000, friction: 63 },
+  reduced: { duration: 150, easing: easings.linear },
+  contentFade: 0.15,
 }
